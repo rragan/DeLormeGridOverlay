@@ -1,0 +1,281 @@
+// ==UserScript==
+/* globals jQuery, $, L, waitForKeyElements, cloneInto */
+// @name            Delorme Grid Washington State Overlay (will support state selection)
+// @author          rragan (derived from cachetur Assistant code)
+// @namespace       1.0.0.0
+// @description     Companion script for geocaching.com
+// @include         https://www.geocaching.com/play/map*
+// @include         http://www.geocaching.com/play/map*
+// @include         https://www.geocaching.com/map/*
+// @include         http://www.geocaching.com/map/*
+// @include         https://www.geocaching.com/play/map*
+// @include         http://www.geocaching.com/play/map*
+// @include         https://www.geocaching.com/geocache/*
+// @include         http://www.geocaching.com/geocache/*
+// @include         https://www.geocaching.com/seek/cache_details.aspx*
+// @include         https://www.geocaching.com/plan/lists/BM*
+// @include         http://www.geocaching.com/play/geotours/*
+// @include         https://www.geocaching.com/play/geotours/*
+// @include         http://project-gc.com/*
+// @include         https://project-gc.com/*
+// @connect         self
+// @grant           GM_xmlhttpRequest
+// @grant           GM_info
+// @grant           GM_setValue
+// @grant           GM_getValue
+// @grant           GM_openInTab
+// @grant           GM_addStyle
+// @grant           GM_addStyle
+// @grant           unsafeWindow
+// @run-at          document-end
+// @copyright       2021+, rragan
+// @require         https://code.jquery.com/jquery-latest.js
+// @require         https://gist.github.com/raw/2625891/waitForKeyElements.js
+// ==/UserScript==
+
+// NWashington State DeLorme Grid coordinates
+var washingtonGrid = [
+[49.016498,48.499817,-122.876289,-123.417980,"Page 14"],
+[49.016509,48.499823,-122.334601,-122.876296,"Page 15"],
+[49.016517,48.499829,-121.792919,-122.334605,"Page 16"],
+[49.016519,48.499835,-121.251229,-121.792919,"Page 17"],
+[49.016527,48.499844,-120.709549,-121.251244,"Page 18"],
+[49.016539,48.499858,-120.167862,-120.709561,"Page 19"],
+[49.016549,48.499868,-119.626169,-120.167873,"Page 20"],
+[49.016573,48.499873,-119.084480,-119.626187,"Page 21"],
+[49.016573,48.499880,-118.542794,-119.084488,"Page 22"],
+[49.016580,48.499890,-118.001095,-118.542807,"Page 23"],
+[49.016590,48.499901,-117.459402,-118.001107,"Page 24"],
+[49.016604,48.499908,-116.917708,-117.459414,"Page 25"],
+[47.983130,47.724795,-124.501313,-124.718000,"Page 26"],
+[48.499796,47.983120,-124.501324,-125.043032,"Page 27"],
+[48.499809,47.983130,-123.959646,-124.501344,"Page 28"],
+[48.499817,47.983140,-123.417962,-123.959652,"Page 29"],
+[48.499823,47.983146,-122.876280,-123.417964,"Page 30"],
+[48.499829,47.983146,-122.334585,-122.876289,"Page 31"],
+[48.499835,47.983150,-121.792901,-122.334605,"Page 32"],
+[48.499844,47.983158,-121.251215,-121.792919,"Page 33"],
+[48.499858,47.983164,-120.709541,-121.251229,"Page 34"],
+[48.499868,47.983182,-120.167858,-120.709549,"Page 35"],
+[48.499873,47.983193,-119.626161,-120.167862,"Page 36"],
+[48.499880,47.983200,-119.084470,-119.626169,"Page 37"],
+[48.499890,47.983207,-118.542781,-119.084480,"Page 38"],
+[48.499901,47.983214,-118.001083,-118.542794,"Page 39"],
+[48.499908,47.983219,-117.459391,-118.001095,"Page 40"],
+[48.499918,47.983227,-116.917698,-117.459402,"Page 41"],
+[47.983140,47.466468,-123.959624,-124.501324,"Page 42"],
+[47.983146,47.466474,-123.417944,-123.959646,"Page 43"],
+[47.983146,47.466478,-122.876258,-123.417962,"Page 44"],
+[47.983150,47.466483,-122.334569,-122.876280,"Page 45"],
+[47.983158,47.466488,-121.792888,-122.334585,"Page 46"],
+[47.983164,47.466491,-121.251206,-121.792901,"Page 47"],
+[47.983182,47.466502,-120.709529,-121.251215,"Page 48"],
+[47.983193,47.466510,-120.167844,-120.709541,"Page 49"],
+[47.983200,47.466517,-119.626153,-120.167858,"Page 50"],
+[47.983207,47.466527,-119.084459,-119.626161,"Page 51"],
+[47.983214,47.466535,-118.542766,-119.084470,"Page 52"],
+[47.983219,47.466538,-118.001069,-118.542781,"Page 53"],
+[47.983227,47.466545,-117.459368,-118.001083,"Page 54"],
+[47.983236,47.466559,-116.917683,-117.459391,"Page 55"],
+[47.466474,46.949806,-123.959614,-124.501305,"Page 56"],
+[47.466478,46.949813,-123.417935,-123.959624,"Page 57"],
+[47.466483,46.949819,-122.876247,-123.417944,"Page 58"],
+[47.466488,46.949820,-122.334561,-122.876258,"Page 59"],
+[47.466491,46.949824,-121.792878,-122.334569,"Page 60"],
+[47.466502,46.949829,-121.251198,-121.792888,"Page 61"],
+[47.466510,46.949837,-120.709518,-121.251206,"Page 62"],
+[47.466517,46.949846,-120.167836,-120.709529,"Page 63"],
+[47.466527,46.949851,-119.626148,-120.167844,"Page 64"],
+[47.466535,46.949859,-119.084455,-119.626153,"Page 65"],
+[47.466538,46.949864,-118.542761,-119.084459,"Page 66"],
+[47.466545,46.949868,-118.001060,-118.542766,"Page 67"],
+[47.466559,46.949878,-117.459355,-118.001069,"Page 68"],
+[47.466570,46.949889,-116.917665,-117.459368,"Page 69"],
+[46.949813,46.433147,-123.959602,-124.501295,"Page 70"],
+[46.949819,46.433156,-123.417921,-123.959614,"Page 71"],
+[46.949820,46.433161,-122.876228,-123.417935,"Page 72"],
+[46.949824,46.433164,-122.334548,-122.876247,"Page 73"],
+[46.949829,46.433165,-121.792865,-122.334561,"Page 74"],
+[46.949837,46.433169,-121.251189,-121.792878,"Page 75"],
+[46.949846,46.433174,-120.709513,-121.251198,"Page 76"],
+[46.949851,46.433181,-120.167829,-120.709518,"Page 77"],
+[46.949859,46.433185,-119.626141,-120.167836,"Page 78"],
+[46.949864,46.433190,-119.084454,-119.626148,"Page 79"],
+[46.949868,46.433192,-118.542761,-119.084455,"Page 80"],
+[46.949878,46.433194,-118.001054,-118.542762,"Page 81"],
+[46.949889,46.433199,-117.459346,-118.001060,"Page 82"],
+[46.949894,46.433210,-116.917655,-117.459355,"Page 83"],
+[46.433156,45.916486,-123.959583,-124.501284,"Page 84"],
+[46.433161,45.916496,-123.417900,-123.959602,"Page 85"],
+[46.433164,45.916500,-122.876217,-123.417921,"Page 86"],
+[46.433165,45.916501,-122.334540,-122.876228,"Page 87"],
+[46.433169,45.916501,-121.792858,-122.334548,"Page 88"],
+[46.433174,45.916505,-121.251186,-121.792865,"Page 89"],
+[46.433181,45.916511,-120.709507,-121.251189,"Page 90"],
+[46.433185,45.916514,-120.167823,-120.709513,"Page 91"],
+[46.433190,45.916519,-119.626138,-120.167829,"Page 92"],
+[46.433192,45.916522,-119.084452,-119.626141,"Page 93"],
+[46.433194,45.916522,-118.542753,-119.084454,"Page 94"],
+[46.433199,45.916522,-118.001050,-118.542762,"Page 95"],
+[46.433210,45.916527,-117.459343,-118.001054,"Page 96"],
+[46.433219,45.916535,-116.917648,-117.459346,"Page 97"],
+[45.916503,45.399840,-122.334532,-122.876217,"Page 99"],
+[45.916505,45.399840,-121.792855,-122.334540,"Page 100"],
+[45.916511,45.399840,-121.251181,-121.792858,"Page 101"],
+[45.916514,45.399840,-120.709499,-121.251186,"Page 102"],
+[45.916519,45.658180,-120.167819,-120.709507,"Page 103A"],
+[45.916522,45.744296,-119.626136,-120.167823,"Page 103B"]
+];
+
+this.$ = this.jQuery = jQuery.noConflict(true);
+let _dgPage = "unknown";
+let _gridLayer = [];
+let _pagenumberLayer = [];
+let _initialized = false;
+let _pageNumbersShown = false;
+let _dgGridColor = "#ad1457";
+let _dgWhichGrid = washingtonGrid;
+console.log("Starting Delorme Grid " + GM_info.script.version);
+$("#gc-header, #GCHeader").show();
+let pathname = window.location.pathname;
+let domain = document.domain;
+
+if (domain === "www.geocaching.com") {
+    if (pathname.indexOf("/play/map") > -1) _dgPage = "gc_map_new";
+    else if (pathname.indexOf("/map/") > -1) _dgPage = "gc_map";
+}
+
+console.log("Running in " + _dgPage + " mode");
+
+if (_dgPage === "gc_map_new") {
+    var checkExist = setInterval(function() {
+        if ($('.mapboxgl-canvas').length) {
+            console.log("Exists!");
+            clearInterval(checkExist);
+        }
+    }, 100); // check every 100ms
+    console.log("Doing dirty trick to take over Geocaching.com's leaflet object");
+    let originalLMap = L.Map;
+
+    L.Map = function(div, settings) {
+        unsafeWindow.delormeGCMap = new originalLMap(div, settings);
+        L.Map = originalLMap;
+        return unsafeWindow.delormeGCMap;
+    };
+}
+
+$(document).ready(function() {
+    ctInit();
+});
+
+function ctInit() {
+    if (_initialized) return;
+    console.log("Initializing Delorme Grid");
+    ctCreateTripList();
+    _initialized = true;
+}
+
+function ctDrawGrid() {
+    GM_addStyle(".map-label { position: absolute; bottom: 0;left: -50%; display: flex; flex-direction: column; text-align: center; ");
+    GM_addStyle(".map-label-content { order: 1; position: relative; left: -50%; background-color: #fff; border-radius: 5px; border-width: 2px; border-style: solid; border-color: #f00; padding: 3px; white-space: nowrap;");
+
+    let markers = [];
+    let numbers = [];
+    let unsafeLeafletObject = ctGetUnsafeLeafletObject();
+    if (unsafeWindow.delormeGridLayer) {
+        unsafeLeafletObject.removeLayer(unsafeWindow.delormeGridLayer);
+    }
+    if (unsafeWindow.delormePageNumberLayer) {
+        unsafeLeafletObject.removeLayer(unsafeWindow.delormePageNumberLayer);
+    }
+
+    let grid = [];
+    for (var i = 0; i < _dgWhichGrid.length; i++) {
+        var latline = _dgWhichGrid[i];
+        var lat1 = parseFloat(latline[0]);
+        var lat2 = parseFloat(latline[1]);
+        var lng1 = parseFloat(latline[2]);
+        var lng2 = parseFloat(latline[3]);
+        var bounds = [
+            [lat1, lng1],
+            [lat2, lng2]
+        ];
+        var rect = L.rectangle(bounds, {
+            color: _dgGridColor,
+            fill: false,
+            weight: 1
+        });
+        var pageText = latline[4];
+        pageText = pageText.replace("Page ", "");
+        var icon = L.divIcon({
+            iconSize: null,
+            html: '<div class="map-label"><div class="map-label-content">' + pageText + '</div></div>'
+        });
+        if (latline[4]) {
+            var pageNumber = L.marker([lat2 + .15, lng2 + .15], {
+                icon: icon
+            });
+            numbers.push(pageNumber);
+        }
+        grid.push(rect);
+    }
+
+    _gridLayer = L.layerGroup(grid);
+    unsafeWindow.delormeGridLayer = cloneInto(_gridLayer, unsafeWindow);
+
+    console.log("Injecting grid");
+    unsafeLeafletObject.addLayer(unsafeWindow.delormeGridLayer);
+
+    // Prepare page number layer. Show on toggle of NC/SC/GS label.
+    _pagenumberLayer = L.layerGroup(numbers);
+    unsafeWindow.delormePageNumberLayer = cloneInto(_pagenumberLayer, unsafeWindow);
+
+}
+
+function ctPrependToHeader(data) {
+    console.log("Injecting icon in menu");
+
+    let header;
+    if (_dgPage === "gc_map_new") header = $('.user-menu,.profile-panel');
+    else if (_dgPage === "gc_map") header = $('.user-menu');
+    console.log(header);
+
+    if (header) {
+        header.prepend(data);
+    }
+}
+
+function ctCreateTripList() {
+
+    setTimeout(function() {
+        // 32px tall
+        var washImg = '&nbsp;<span>&nbsp;&nbsp;WA</span><div id="stateIcon" title="Toggle page numbers on/off"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADEAAAAgCAYAAAC7FpAiAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAABmJLR0QA7wDvAO/BzIMFAAAAB3RJTUUH5QgcEywwoWrFXAAAA8lJREFUWMPV2NuLVWUYBvDfu/YeFTXTmopARUOjGUxTiOiA19GVRV50k5A3lV1V/0ARdedNWUZERBcZIURdFBFJRSWFmGkOnlPCxPI0Vjoze6+3i7VNx8Ps8dQeH9jstff38q3nWes9fqENel9vkopkVoSDWXpVWoImSmS7Pc5ACuUIq+32KzGAWuv3gPBsvd1dtz5d0/tWWRa12J2DWVfmcUy9COJnE72SOClMHFFE77up2TcoB3K8mi6Z8yKsSRrSE7j+ilK6RLR9E7WZdZluUeb85CHpV0xhBLf4n1GMtLh1WcjKSydlWqaKgzul5ZjWafKnUO9Z1ezGUTT6VtTOtQikbXhRugv/CHOkhRjfaQFQSC8ovSLN7X2jWfSsag4z6FtRE/Uos7RZeg8n8IPwtjHiUnVpHhZLj2bDJ8LqnlXN/VIRteg/uaPRkLqKrojapBhq9JdzsR2zWoImdV4E3a3rWXhGelj6E2U2cvf42bXd2czrsbVxPHcIR3CDdBR70dthDVnHxjOIBKa3PrCoMgNHpN+Fn/ENHhDWSXdokyCupgCpLIRPVYHdDtPQK90jDOBDaUEHBfwnpIjCGqw0+iA9Jj2OmZjfYQGgyFKzlWm2tFOMTcIBVaXuNgaCGoqohevuLfZjfRvbPcJJaa4qjg6pil/HUS8mhuPflYRtIzRnJ4QD0nxMlEKg6ijHdVpEsWVZnLreg8EL2P2teuoH8ZOws2U71GkBnMoslY6v8OMF7G6U7hP2CutU7jTX2Ohisw5RCzmYhxW+wP3nMQyhT9gsLZJmq4pjp5HIArY+VVRvI+zCBpWvn20+XekR6W7M6DT7M5mdnicKhO/RL73s3HZiqsuZ6K4ihlfbNCg9h55OE7t0ERwSPlAF+TWDs0U0Wi7VdmwdSzhNtkqzXbi99X0t4HR2gihCFBHSYszrNLtRooGB028iEzGI9UINR6XbVHXj1k6zvQCmSEvizH963yyrM7pUFBM0y0H1HMoV0hxVi7FcdVwzltAXI632ri6rWp0iGxnS83jJ1Qv8Bo4YPtuEUxE7HKFKTJtiFBuDnteacLP0GRZeIdJ/YRf6sV/4VvjS8BY/4iwRCWWrPFOO+olGlQKOZdPByyTej8+FDdggbMSJYlycKMZHWQ6lX5Zf3MQ7ereI8Mf7xwe6l07ed57Vg/gahzEBC1RVv4F9WIubMFH4KAofZ2lIPfQ9efkj+qhFFBPoXjqZ8I7qQHmxqpPdIqyMrlgb4zRzUJFDOQMP4jdsj3rsVGZNRGaZTdMKfY+N2pPb4l9QjFHeH/knSgAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAyMS0wOC0yOFQxOTo0NDo0OC0wNDowMPgMHI4AAAAldEVYdGRhdGU6bW9kaWZ5ADIwMjEtMDgtMjhUMTk6NDQ6NDgtMDQ6MDCJUaQyAAAAAElFTkSuQmCC" alt="" /></div>';
+        ctPrependToHeader('<li style="cursor: pointer" title="Page toggle">' + washImg + '</li>');
+        ctDrawGrid(_dgWhichGrid);
+
+        // Toggle page numbers on and off
+        $("#stateIcon").click(function() {
+            let unsafeLeafletObject = ctGetUnsafeLeafletObject();
+            if (_pageNumbersShown) {
+                _pageNumbersShown = false;
+                if (unsafeWindow.delormePageNumberLayer) {
+                    unsafeLeafletObject.removeLayer(unsafeWindow.delormePageNumberLayer);
+                }
+            } else {
+                _pageNumbersShown = true;
+                console.log("showing delorme page numbers");
+                unsafeLeafletObject.addLayer(unsafeWindow.delormePageNumberLayer);
+            }
+
+        });
+
+    }, 1500);
+}
+
+function ctGetUnsafeLeafletObject() {
+    if (_dgPage === "gc_map" && unsafeWindow.MapSettings) return unsafeWindow.MapSettings.Map;
+    else if (_dgPage === "gc_map_new" && unsafeWindow.delormeGCMap) return unsafeWindow.delormeGCMap;
+    else {
+        return null;
+    }
+}
