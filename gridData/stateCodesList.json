@@ -1,4 +1,5 @@
-[
+{
+  list:[
 {"name":"Alabama","code":"AL"},
 {"name":"Alaska","code":"AK"},
 {"name":"Arizona","code":"AZ"},
@@ -59,3 +60,4 @@
 {"name":"Wyoming","code":"WY"}.
 {"name":"Wyoming2","code":"WY2"}
 ]
+}
