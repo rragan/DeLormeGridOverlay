@@ -1,8 +1,8 @@
 // ==UserScript==
 /* globals jQuery, $, L, waitForKeyElements, cloneInto */
-// @name            Delorme Grid Overlay
+// @name            California Grids overlay
 // @author          rragan (derived from cachetur Assistant code)
-// @namespace       1.0.0.0
+// @version         1.0.0.0
 // @description     Companion script for geocaching.com with Norcal and Golden State DeLorme Grids
 // @include         https://www.geocaching.com/play/map*
 // @include         http://www.geocaching.com/play/map*
@@ -31,6 +31,8 @@
 // @copyright       2021+, rragan
 // @require         https://code.jquery.com/jquery-latest.js
 // @require         https://gist.github.com/raw/2625891/waitForKeyElements.js
+// @updateURL       https://github.com/rragan/DeLormeGridOverlay/raw/main/CaliforniaGrids.meta.js
+// @downloadURL     https://github.com/rragan/DeLormeGridOverlay/raw/main/CaliforniaGrids.user.js
 // ==/UserScript==
 
 // Northern California DeLorme Grid coordinates
