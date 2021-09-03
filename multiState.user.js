@@ -2,7 +2,7 @@
 /* globals jQuery, $, L, waitForKeyElements, cloneInto */
 // @name            Delorme Grid Generic State Overlay
 // @author          rragan (derived from cachetur Assistant code)
-// @version       1.0.0.0
+// @version         1.0.0.0
 // @description     Companion script for geocaching.com
 // @include         https://www.geocaching.com/play/map*
 // @include         http://www.geocaching.com/play/map*
@@ -33,6 +33,8 @@
 // @copyright       2021+, rragan
 // @require         https://code.jquery.com/jquery-latest.js
 // @require         https://gist.github.com/raw/2625891/waitForKeyElements.js
+// @updateURL       https://github.com/rragan/DeLormeGridOverlay/raw/main/multiState.meta.js
+// @downloadURL     https://github.com/rragan/DeLormeGridOverlay/raw/main/multiState.user.js
 // ==/UserScript==
 function wait4containers() {
     let mapNode = document.querySelector("div.map-container, .leaflet-container");
