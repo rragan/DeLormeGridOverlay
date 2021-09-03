@@ -2,7 +2,7 @@
 /* globals jQuery, $, L, waitForKeyElements, cloneInto */
 // @name            Delorme Grid Generic State Overlay
 // @author          rragan (derived from cachetur Assistant code)
-// @namespace       1.0.0.0
+// @version       1.0.0.0
 // @description     Companion script for geocaching.com
 // @include         https://www.geocaching.com/play/map*
 // @include         http://www.geocaching.com/play/map*
@@ -54,6 +54,8 @@ function wait4containers() {
     let _dgGridColor = "#ad1457";
     let _dgWhichGrid = "";
     let _stateCode = "";
+    let _newView = "";
+    let _changedState;
     let options = '<option value="XX">Pick State</option>';
     // # Sign icon
     let numberImg = '<img id="stateIcon" style="cursor: pointer" src="data:image/png;base64,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" alt="" />';
@@ -114,12 +116,13 @@ function wait4containers() {
             }
 
             dgDataCall(storedState, function(data) {
+                    let unsafeLeafletObject = ctGetUnsafeLeafletObject();
                     if (!data.grid) {
                         alert("No grid data available");
                     } else {
                         _dgWhichGrid = data.grid;
                         _stateCode = data.state;
-                        dgCreateGrid()
+                        dgCreateGrid();
                         _initialized = true;
                     }
                 }
@@ -136,7 +139,8 @@ function wait4containers() {
         let numbers = [];
         let unsafeLeafletObject = ctGetUnsafeLeafletObject();
         clearLayers();
-        let newView = "";
+        let firstLatLon = true;
+        let newView;
 
         let grid = [];
         for (var i = 0; i < _dgWhichGrid.length; i++) {
@@ -149,8 +153,10 @@ function wait4containers() {
                 [lat1, lng1],
                 [lat2, lng2]
             ];
-            if (!newView) {
+            // capture first lat/lon for shifting map view
+            if (firstLatLon) {
                 newView = new L.LatLng(lat1, lng1);
+                firstLatLon = false;
             }
             var rect = L.rectangle(bounds, {
                 color: _dgGridColor,
@@ -170,7 +176,6 @@ function wait4containers() {
                 numbers.push(pageNumber);
             }
             grid.push(rect);
-            unsafeLeafletObject.flyTo(newView, 6);
         }
 
         _gridLayer = L.layerGroup(grid);
@@ -178,11 +183,14 @@ function wait4containers() {
 
         console.log("Injecting grid");
         unsafeLeafletObject.addLayer(unsafeWindow.delormeGridLayer);
+        if(_changedState) {
+            unsafeLeafletObject.flyTo(newView, 6);
+            _changedState = false;
+         }
 
         // Prepare page number layer.
         _pagenumberLayer = L.layerGroup(numbers);
         unsafeWindow.delormePageNumberLayer = cloneInto(_pagenumberLayer, unsafeWindow);
-
     }
 
     function clearLayers() {
@@ -222,12 +230,14 @@ function wait4containers() {
             }
         });
         $("#stateSelect").change(function() {
+            let unsafeLeafletObject = ctGetUnsafeLeafletObject();
             let id = $("#stateSelect").val();
             if (id !== "XX") {
                 GM_setValue("dg_selected_state", id);
+                _changedState = true;
                 _initialized = true;
                 clearLayers();
-                ctInit()
+                ctInit();
             } else {
                 GM_setValue("dg_selected_state", "");
             }
