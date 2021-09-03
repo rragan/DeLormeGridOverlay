@@ -119,19 +119,6 @@ function wait4containers() {
                     } else {
                         _dgWhichGrid = data.grid;
                         _stateCode = data.state;
-                        /*
-                                                $("#stateSelect").change(function() {
-                                                    let id = $("#stateSelect").val();
-                                                    if(id !== "XX") {
-                        				    GM_setValue("dg_selected_state", id);
-                        				    _initialized = true;
-                        				    clearLayers();
-                        				    ctInit()
-                        			    } else {
-                        			    	GM_setValue("dg_selected_state", "");
-                        			    }
-                                                });
-                        */
                         dgCreateGrid()
                         _initialized = true;
                     }
@@ -171,7 +158,7 @@ function wait4containers() {
                 weight: 1
             });
             var pageText = latline[4];
-            pageText = pageText.replace("Page ", "");
+            pageText = pageText.replace(/page /i, "");
             var icon = L.divIcon({
                 iconSize: null,
                 html: '<div class="map-label"><div class="map-label-content">' + pageText + '</div></div>'
