@@ -2,7 +2,7 @@
 /* globals jQuery, $, L, waitForKeyElements, cloneInto */
 // @name            Delorme Grid Generic State Overlay
 // @author          rragan (derived from cachetur Assistant code)
-// @version         1.0.0.0
+// @version         1.0.0.1
 // @description     Companion script for geocaching.com
 // @include         https://www.geocaching.com/play/map*
 // @include         http://www.geocaching.com/play/map*
@@ -114,7 +114,7 @@ function wait4containers() {
                 });
             }
             if (!_initialized) {
-                ctPrependToHeader('<li><select id="stateSelect">' + options + '</select>' + numberImg + '</li>');
+                ctPrependToHeader('<li>DeLorme Grid&nbsp;<select id="stateSelect">' + options + '</select>' + numberImg + '</li>');
             }
 
             dgDataCall(storedState, function(data) {
