@@ -2,7 +2,7 @@
 /* globals jQuery, $, L, waitForKeyElements, cloneInto */
 // @name            Delorme Grid Generic State Overlay
 // @author          rragan (derived from cachetur Assistant code)
-// @version         1.0.0.1
+// @version         1.0.0.2
 // @description     Companion script for geocaching.com
 // @include         https://www.geocaching.com/play/map*
 // @include         http://www.geocaching.com/play/map*
@@ -53,7 +53,7 @@ function wait4containers() {
     let _pagenumberLayer = [];
     let _initialized = false;
     let _pageNumbersShown = false;
-    let _dgGridColor = "#ad1457";
+    let _dgGridColor = "#CC00FF";
     let _dgWhichGrid = "";
     let _stateCode = "";
     let _newView = "";
