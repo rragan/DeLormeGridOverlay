@@ -1,8 +1,8 @@
 // ==UserScript==
 /* globals jQuery, $, L, waitForKeyElements, cloneInto */
-// @name            Delorme Grid Generic State Overlay
+// @name            Delorme Grid Multi-state Overlay
 // @author          rragan (derived from cachetur Assistant code)
-// @version         1.0.0.2
+// @version         1.0.0.3
 // @description     Companion script for geocaching.com
 // @include         https://www.geocaching.com/play/map*
 // @include         http://www.geocaching.com/play/map*
@@ -54,6 +54,7 @@ function wait4containers() {
     let _initialized = false;
     let _pageNumbersShown = false;
     let _dgGridColor = "#CC00FF";
+    let _dgGridArchivedColor = "#000";
     let _dgWhichGrid = "";
     let _stateCode = "";
     let _newView = "";
@@ -160,6 +161,12 @@ function wait4containers() {
                 newView = new L.LatLng(lat1, lng1);
                 firstLatLon = false;
             }
+            // Black grid color for archived DeLorme challenges - menu name ends with :(
+            var gridColor = _dgGridColor;
+            if (latline[4].endsWith(":(")) {
+                gridColor = _dgGridArchivedColor;
+            }
+                
             var rect = L.rectangle(bounds, {
                 color: _dgGridColor,
                 fill: false,
