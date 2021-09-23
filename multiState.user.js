@@ -121,7 +121,7 @@ function wait4containers() {
             dgDataCall(storedState, function(data) {
                     let unsafeLeafletObject = ctGetUnsafeLeafletObject();
                     if (!data.grid) {
-                        alert("No grid data available");
+                        //alert("No grid data available");
                     } else {
                         _dgWhichGrid = data.grid;
                         _stateCode = data.state;
