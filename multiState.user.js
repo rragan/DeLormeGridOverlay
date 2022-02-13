@@ -2,7 +2,7 @@
 /* globals jQuery, $, L, waitForKeyElements, cloneInto */
 // @name            Delorme Grid Multi-state Overlay
 // @author          rragan (derived from cachetur Assistant code)
-// @version         1.0.0.3
+// @version         1.0.0.4
 // @description     Companion script for geocaching.com
 // @include         https://www.geocaching.com/play/map*
 // @include         http://www.geocaching.com/play/map*
@@ -81,14 +81,26 @@ function wait4containers() {
                 clearInterval(checkExist);
             }
         }, 100); // check every 100ms
-        console.log("Doing dirty trick to take over Geocaching.com's leaflet object");
-        let originalLMap = L.Map;
 
-        L.Map = function(div, settings) {
-            unsafeWindow.delormeGCMap = new originalLMap(div, settings);
-            L.Map = originalLMap;
-            return unsafeWindow.delormeGCMap;
-        };
+        // See if Cachetur Assistant has got the map object. If so, just use it.
+        if (unsafeWindow.cacheturGCMap) {
+            console.log("MULTISTATE was BEAT TO MAP BY CTA");
+            unsafeWindow.delormeGCMap = unsafeWindow.cacheturGCMap;
+        } else if (unsafeWindow.gcMap) { // If anyone has set the object in a shared place, use it
+            console.log("MULTISTATE sees MAP from other extension");
+            unsafeWindow.delormeGCMap = unsafeWindow.gcMap;
+        } else {
+            console.log("DeLorme Doing dirty trick to take over Geocaching.com's leaflet object");
+            let originalLMap = L.Map;
+
+            L.Map = function(div, settings) {
+                unsafeWindow.delormeGCMap = new originalLMap(div, settings);
+                L.Map = originalLMap;
+                console.log("MULTISTATE got MAP");
+                unsafeWindow.gcMap = unsafeWindow.delormeGCMap; // Save a copy in a shared place for others
+                return unsafeWindow.delormeGCMap;
+            };
+        }
     }
 
     $(document).ready(function() {
@@ -166,7 +178,7 @@ function wait4containers() {
             if (latline[4].endsWith(":(")) {
                 gridColor = _dgGridArchivedColor;
             }
-                
+
             var rect = L.rectangle(bounds, {
                 color: _dgGridColor,
                 fill: false,
