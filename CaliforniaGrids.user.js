@@ -2,7 +2,7 @@
 /* globals jQuery, $, L, waitForKeyElements, cloneInto */
 // @name            California Grids overlay
 // @author          rragan (derived from cachetur Assistant code)
-// @version         1.0.0.1
+// @version         1.0.0.2
 // @description     Companion script for geocaching.com with Norcal and Golden State DeLorme Grids
 // @include         https://www.geocaching.com/play/map*
 // @include         http://www.geocaching.com/play/map*
