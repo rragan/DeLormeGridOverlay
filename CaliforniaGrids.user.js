@@ -596,3 +596,4 @@ function ctGetUnsafeLeafletObject() {
         return null;
     }
 }
+}
