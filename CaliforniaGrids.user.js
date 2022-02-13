@@ -441,7 +441,7 @@ if (_dgPage === "gc_map_new") {
         }
     }, 100); // check every 100ms
    if (unsafeWindow.cacheturGCMap) {
-        console.log("MULTISTATE was BEAT TO MAP BY CTA. Use it");
+        console.log("CALIF GRID was BEAT TO MAP BY CTA. Use it");
         unsafeWindow.delormeGCMap = unsafeWindow.cacheturGCMap;
     } else if (unsafeWindow.gcMap) { // If anyone has set the object in a shared place, use it
         console.log("CA Grid sees MAP from other extension/ Use it.");
