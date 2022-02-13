@@ -2,7 +2,7 @@
 /* globals jQuery, $, L, waitForKeyElements, cloneInto */
 // @name            California Grids overlay
 // @author          rragan (derived from cachetur Assistant code)
-// @version         1.0.0.0
+// @version         1.0.0.1
 // @description     Companion script for geocaching.com with Norcal and Golden State DeLorme Grids
 // @include         https://www.geocaching.com/play/map*
 // @include         http://www.geocaching.com/play/map*
@@ -440,15 +440,21 @@ if (_dgPage === "gc_map_new") {
             clearInterval(checkExist);
         }
     }, 100); // check every 100ms
-    console.log("Doing dirty trick to take over Geocaching.com's leaflet object");
-    let originalLMap = L.Map;
-
-    L.Map = function(div, settings) {
-        unsafeWindow.delormeGCMap = new originalLMap(div, settings);
-        L.Map = originalLMap;
-        return unsafeWindow.delormeGCMap;
-    };
-}
+   if (unsafeWindow.cacheturGCMap) {
+        console.log("MULTISTATE was BEAT TO MAP BY CTA. Use it");
+        unsafeWindow.delormeGCMap = unsafeWindow.cacheturGCMap;
+    } else if (unsafeWindow.gcMap) { // If anyone has set the object in a shared place, use it
+        console.log("CA Grid sees MAP from other extension/ Use it.");
+        unsafeWindow.delormeGCMap = unsafeWindow.gcMap;
+    } else {
+        console.log("DeLorme Doing dirty trick to take over Geocaching.com's leaflet object");
+        let originalLMap = L.Map;
+        L.Map = function(div, settings) {
+            unsafeWindow.delormeGCMap = new originalLMap(div, settings);
+            L.Map = originalLMap;
+            return unsafeWindow.delormeGCMap;
+        };
+    }
 
 $(document).ready(function() {
     ctInit();
