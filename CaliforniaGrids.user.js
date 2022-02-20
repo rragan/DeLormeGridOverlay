@@ -410,6 +410,14 @@ var SCalCoords = [
 
 ];
 
+function wait4containers() {
+    let mapNode = document.querySelector("div.map-container, .leaflet-container");
+    if (mapNode == null) {
+        // the node doesn't exist yet, wait and try again
+        window.setTimeout(wait4containers, 300);
+        return;
+    }
+
 this.$ = this.jQuery = jQuery.noConflict(true);
 let _dgPage = "unknown";
 let _gridLayer = [];
@@ -597,3 +605,5 @@ function ctGetUnsafeLeafletObject() {
     }
 }
 }
+}
+wait4containers();
