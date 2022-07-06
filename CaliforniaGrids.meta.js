@@ -2,7 +2,7 @@
 /* globals jQuery, $, L, waitForKeyElements, cloneInto */
 // @name            California Grids Overlay
 // @author          rragan (derived from cachetur Assistant code)
-// @version         1.0.0.4
+// @version         1.0.0.5
 // @description     Companion script for geocaching.com
 // @include         https://www.geocaching.com/play/map*
 // @include         http://www.geocaching.com/play/map*
