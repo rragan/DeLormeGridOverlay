@@ -2,7 +2,7 @@
 /* globals jQuery, $, L, waitForKeyElements, cloneInto */
 // @name            California Grids overlay
 // @author          rragan (derived from cachetur Assistant code)
-// @version         1.0.0.4
+// @version         1.0.0.5
 // @description     Companion script for geocaching.com with Norcal and Golden State DeLorme Grids
 // @include         https://www.geocaching.com/play/map*
 // @include         http://www.geocaching.com/play/map*
@@ -540,18 +540,12 @@ function ctDrawGrid() {
 function ctPrependToHeader(data) {
     console.log("Injecting icon in menu");
     let header;
-    if (_dgPage === "gc_map_new") {
-    	header = $('.user-menu,.profile-panel');
-    	if (header) {
-		header.prepend(data);
-    	}
-    }
-    // Hack because HQ broke browse header.
-    else if (_dgPage === "gc_map") {
-    	header = document.getElementById("gc-header-root");
-        if (header) {
-       		header.insertAdjacentHTML('afterbegin',data);
-    	}
+    if (_dgPage === "gc_map_new") header = $('.user-menu,.profile-panel');
+    else if (_dgPage === "gc_map") header = $('.user-menu');
+    console.log(header);
+
+    if (header) {
+        header.prepend(data);
     }
 }
 
@@ -559,16 +553,8 @@ function ctCreateTripList() {
 
     setTimeout(function() {
         // 32px tall
-        var califImg;
-       // Hack to get browse map to work with HQ breakage
-       if (_dgPage === "gc_map_new") {
-                califImg = '&nbsp;<span id="whichGrid"  title="Toggle page numbers on/off">NC</span><div id="califIcon" title="Switch NC/SC/GS grids"><img src="data:image/png;base64,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" alt="" /></div>';
-        	ctPrependToHeader('<li style="cursor: pointer" title="NC/GS switch">' + califImg + '</li>');
-        }
-        else if (_dgPage === "gc_map") {
-                califImg = '&nbsp;<span id="whichGrid" style="font-weight: bold; background-color:#ddd;" title="Toggle page numbers on/off">NC</span><div id="califIcon" title="Switch NC/SC/GS grids"><img src="data:image/png;base64,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" alt="" /></div>';
-                ctPrependToHeader('<span style="cursor: pointer"  title="NC/GS switch">' + califImg + '</span>');
-        }
+        var califImg = '&nbsp;<span id="whichGrid" title="Toggle page numbers on/off">NC</span><div id="califIcon" title="Switch NC/SC/GS grids"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAgCAYAAAB6kdqOAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAABmJLR0QA/wD/AP+gvaeTAAAAB3RJTUUH5QgQEgI3fx2MXAAABmRJREFUWMOtl01sXFcVx3/33vdmYjuejOPYTlCM80ULgdCUkkZEahKKUikSUgUsqFRYIIQQmxQ22fEhwQIhFQkJNhGLCIkNIpWBRWWBRNU0KRIU0iRO0kbkw3VxUtszjj32fNyPw2LmPb+ZjGkccqT/vJl5997zv/9z3rnnKVp2/fp1tNacOnWKEydOPKO1/qbW+qBSaqNSikdhIoKI1ETkovf+9MrKyqtxHDsRYefOnQAogImJCcbGxqhUKnpkZORbxpgfaq23PSoi3YiFEBa897+oVqs/1VrXyuUyBw4caBISEWZmZqjVas/HcfwbpVRBa51OfpSWbDKEgIg459z3duzY8cuzZ89y+PDhJqELFy4gIv3FYnHcGPOsUiqdiAiCQMorS1DBOlTMKt4KHyGEa8vLy8eUUtN79+4lSgaEEHY75/YrpUjUUUpRXlzid3/9J8sOFJkFEXrzMV955tMMFfsfSMnOMSEEnHO7nXNP5nK5aaBJyFqLtXawVqv1aq0xxpCoJAJvlWJmzDA6I4YABad4ziqGO3Rbj0L1ej2uVqvDiQgRgHMOa6323rdNVEpRbzRw3pPb2NfSR1qfChMLonST/EPmkvce51zqO8qMkUSVBEZrJm/NMO/yxKqZT1mNmj9bIX6I5G/L1ZZFyQ2tdXpNviulGBjYTF9/TM0HVCYwAoQAKIXWCmR9GolIm8+EmM4yTcikA5Tiqce2s28g4BoNgvcpxHvwAZ1ZcD3oJJMQioA1FwToyef4aJ/wxn9q6PyGNHuFpihaNxeVB0rrdsv6TZK6TaFO9sn3vaOD9CqHt57gmhDnqVQdr03OsFytY8z6VeomQFdCWQiKg58Y4/hj/bh6jeBcCuc8v3+7zMt/eps78/eI/k9SaxLqfAJyuYjjnxpmW66Ba1iCdQTrEOtwwfDnG44fn7nI1Vt3MQ+RT/cR+jALQdgzOsQLnx2Gxgre2hTBWgjwr7vwozOXOXfpJk1dH84eiBA0j40Du7cwaGo46wjOtkGFwM17ip+MX+MP567ivL+vxjyIRbBaxrPoNC/CyOYCn9yaZ/rdKiaK7j8vFMxZzc9fvcEH5WVe/MI+ens2ENYomt18RtAs3yGENnTbnTGGQ48Pc/7ft1hqrB2WZTS/fu197pSW+fYX97OlWLiPVOukT9F2dCR/ZNGNkAc+/5k9BGJ+Nn6VitVrdh8BzSv/mOdu6TwvfWk/Oz6yhSDthBJfCak0hzrJtA68rgA4+sR2vvq5bRi/+sTdD4sEeP2dCt8//SZXbswQwuq6iY+sz66EshPWIgrC8wfHGO2rU6vWW6WgOwjCxffq/OqPl5gtLbat0+kzDVmWsXMu7YfWarqUUuRizaGPD9LbZ5lbrDM1W21W9i4hVMDf3y3zt8vv8dzTuwnSDFnn5tuSOhsWY8wDPKCKrx1/khecZ/qDRV554xZvXS/xfqnePHqy+STCYGEDH9s+gLUuTfBu6ZB2jK0mDWttWzvwYaYVjG0t8NKX93Ht1ixnzt7m9ctzuEBKygehL6foiTXW2bR1SvwlvlNCtVoNay25XI58Pp+GbL32+Ngg3x3upy++yPibd5rdJKCVIq8D1jZwziCtkDUaDWq1GtVqlbYWtlwu472vKKVsFEUbtNZEUbRuQgC5WHPsqa28c3ueQqHA2EgfYyMb2bmtn3xssLYZGu89KysrLC0thcXFxXuNRmOV0MzMDN77GyGEG8ATWmt6enpS1uu10ZEBfvCNp+nJx+Rig269LAQJONesOfV6nYWFBUql0t1SqTSZCGAApqamOHny5PLk5GSviByD1RfI/1WT1kIInsiotO5Y67Cte41Gg2q1ysLCAnNzc5TL5dMTExO/LZVKcuXKlaZjpZQSEXX06NHBQ4cOvTw0NPRioVDQPT09D51P3SzZYL1eZ2lpidnZ2b9cunTpO+Pj4zeVUkFERLXUiIBeYFOxWNxz5MiRr+/atevZTZs2DUVNLVVmbNbWYtpZwEQpJYB4732lUilPTU2dP3fu3Onp6enLwAKwArjEiQZyQB9QADYXi8XR4eHh0SiKBrz3fd77XhHJhxByIhIDRkRMa77KEAlKqQB4pZRTSjW01jVjTNUYUxGRhbm5uenZ2dnbwDywBCwDDSBkd6gyMC2SpqVeApOBZrWfyhISILSuvgXXAd8aEzJjAfgvtU9yD2ndyCMAAAAldEVYdGRhdGU6Y3JlYXRlADIwMjEtMDgtMTZUMTg6MDI6NDArMDA6MDCBkVHMAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDIxLTA4LTE2VDE4OjAyOjQwKzAwOjAw8MzpcAAAAABJRU5ErkJggg==" alt="" /></div>';
+        ctPrependToHeader('<li style="cursor: pointer" title="NC/GS switch">' + califImg + '</li>');
         ctDrawGrid(_dgWhichGrid);
 
         // Swap Norcal and Golden State Grids and SoCal
