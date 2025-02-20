@@ -2,7 +2,7 @@
 /* globals jQuery, $, L, waitForKeyElements, cloneInto */
 // @name            Delorme Grid Multi-state Overlay
 // @author          rragan (derived from cachetur Assistant code)
-// @version         1.0.0.5
+// @version         1.0.0.6
 // @description     Companion script for geocaching.com
 // @include         https://www.geocaching.com/play/map*
 // @include         http://www.geocaching.com/play/map*
