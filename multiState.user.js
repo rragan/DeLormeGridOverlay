@@ -2,7 +2,7 @@
 /* globals jQuery, $, L, waitForKeyElements, cloneInto */
 // @name            Delorme Grid Multi-state Overlay
 // @author          rragan (derived from cachetur Assistant code)
-// @version         1.0.0.5
+// @version         1.0.0.6
 // @description     Companion script for geocaching.com
 // @include         https://www.geocaching.com/play/map*
 // @include         http://www.geocaching.com/play/map*
@@ -205,7 +205,8 @@ function wait4containers() {
         console.log("Injecting grid");
         unsafeLeafletObject.addLayer(unsafeWindow.delormeGridLayer);
         if(_changedState) {
-            unsafeLeafletObject.flyTo(newView, 6);
+            // flyTo seems to have broken in recent Leaflet version. Disable for now
+            //unsafeLeafletObject.flyTo(newView, 6);
             _changedState = false;
          }
 
